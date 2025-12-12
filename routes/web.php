@@ -18,13 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Invitation acceptance routes removed - users created immediately with credentials sent via email
 
-/*
-|--------------------------------------------------------------------------
-| Authenticated Routes
-|--------------------------------------------------------------------------
-*/
+// Authenticated Routes
+
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Dashboard
@@ -59,9 +55,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| Public URL Redirect (Catch-all route - MUST be last!)
-|--------------------------------------------------------------------------
-*/
+// Public URL Redirect (Catch-all route - MUST be last!)
+
 Route::get('/{shortCode}', [UrlRedirectController::class, 'redirect'])->where('shortCode', '[a-zA-Z0-9]+')->name('url.redirect');
