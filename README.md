@@ -49,10 +49,10 @@ php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvid
 # 8. Create storage link
 php artisan storage:link
 
-# 9. Build assets
-npm run build
+# 10. Seeder 
+php artisan db:seed
 
-# 10. Start development server
+# 9. Start development server
 php artisan serve
 ```
 
@@ -73,7 +73,6 @@ MAIL_PASSWORD=your_password
 MAIL_FROM_ADDRESS="noreply@shorturl.com"
 ```
 
-Run `php artisan tinker` and execute:
 
 ```php
 // Create roles
@@ -94,7 +93,7 @@ Spatie\Permission\Models\Role::findByName('Member')->givePermissionTo(['create-s
 // Create first SuperAdmin user
 $user = App\Models\User::create([
     'name' => 'Super Admin',
-    'email' => 'admin@example.com',
+    'email' => 'superadmin@gmail.com',
     'password' => Hash::make('password'),
     'is_active' => true
 ]);
@@ -106,7 +105,7 @@ $user->assignRole('SuperAdmin');
 Open browser: `http://localhost:8000`
 
 Login with:
-- Email: admin@example.com
+- Email: superadmin@gmail.com
 - Password: password
 
 
