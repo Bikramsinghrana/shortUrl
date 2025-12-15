@@ -23,11 +23,11 @@ Multi-tenant URL shortening application with role-based access control and compa
 
 ```bash
 # 1. Clone repository
-git clone <repository-url>   Or Unzip folder
+git clone <https://github.com/Bikramsinghrana/shortUrl.git>   Or Unzip folder
 cd shortUrl
 
 # 2. Install dependencies
-composer install
+composer update
 npm install
 
 # 3. Configure environment
@@ -41,7 +41,7 @@ php artisan key:generate
 mysql -u root -p -e "CREATE DATABASE short_url CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
 # 6. Run migrations
-php artisan migrate
+php artisan migrate --seed
 
 # 7. Publish vendor assets
 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
