@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreShortUrlRequest;
 use App\Models\ShortUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,40 +53,30 @@ class ShortUrlController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+
+    public function store(StoreShortUrlRequest $request)
     {
         $user = Auth::user();
 
-        if (!$user->can('create-short-urls')) {
-            abort(403, 'You do not have permission to create short URLs.');
-        }
+        $validated = $request->validated();
 
-        $validated = $request->validate([
-            'original_url' => 'required|url|max:2048',
-            'title' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'short_code' => 'nullable|string|max:10|unique:short_urls,short_code',
-            'expires_at' => 'nullable|date|after:today',
-        ]);
-
-        // Create short URL
         $shortUrl = ShortUrl::create([
-            'user_id' => $user->id,
-            'company_id' => $user->company_id,
+            'user_id'      => $user->id,
+            'company_id'   => $user->company_id,
             'original_url' => $validated['original_url'],
-            'title' => $validated['title'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'short_code' => $validated['short_code'] ?? null, // Will auto-generate if null
-            'expires_at' => $validated['expires_at'] ?? null,
+            'title'        => $validated['title'] ?? null,
+            'description'  => $validated['description'] ?? null,
+            'short_code'   => $validated['short_code'] ?? null,
+            'expires_at'   => $validated['expires_at'] ?? null,
         ]);
 
         if (!$shortUrl) {
-            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to create short URL. Please try again.']);
+            return redirect()->back()->withInput()->withErrors(['error' => 'Failed! Please try again.']);
         }
 
         return redirect()->route('dashboard')->with('success', 'Short URL created successfully!');
-
     }
+
 
     /**
      * Display the specified resource.
