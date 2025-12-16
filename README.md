@@ -17,7 +17,7 @@ Multi-tenant URL shortening application with role-based access control and compa
 - Composer
 - Node.js >= 16.x
 - MySQL >= 5.7
-- Apache/Nginx
+- Apache
 
 ## Installation
 
