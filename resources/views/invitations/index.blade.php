@@ -11,10 +11,10 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                   @can('invite-users')
-                            <a href="{{ route('invitations.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Invite New User
-                            </a>
-                        @endcan
+                    <a href="{{ route('invitations.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Invite New User
+                    </a>
+                  @endcan
                 <div class="p-6">
                     @if($invitations->count() > 0)
                         <table class="min-w-full">

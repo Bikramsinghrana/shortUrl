@@ -55,7 +55,8 @@ class ShortUrlController extends Controller
      */
 
     public function store(StoreShortUrlRequest $request)
-    {
+    {   
+
         $user = Auth::user();
 
         $validated = $request->validated();

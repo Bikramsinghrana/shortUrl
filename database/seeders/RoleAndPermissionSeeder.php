@@ -59,18 +59,6 @@ class RoleAndPermissionSeeder extends Seeder
                 'edit-short-urls',
                 'delete-short-urls',
             ],
-            // 'Sales' => [
-            //     'create-short-urls',
-            //     'view-short-urls',
-            //     'view-analytics',
-            // ],
-            // 'Manager' => [
-            //     'create-short-urls',
-            //     'view-all-company-short-urls',
-            //     'edit-short-urls',
-            //     'view-analytics',
-            //     'invite-users',
-            // ],
         ];
 
         // Create roles and assign permissions
