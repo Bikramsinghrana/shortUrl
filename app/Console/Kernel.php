@@ -12,7 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+       // $schedule->command('inspire')->hourly();
+        $schedule->command('mail:send-invitations')->everyMinute();  // if need before[ crontab -e]
+        // $schedule->command('mail:send-invitations')->daily()->hourly()->dailyAt('10:00')();
+
     }
 
     /**
