@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\RegistrationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +18,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+
+// Route::post('/register', [RegistrationController::class, 'register']);
+// Route::post('/login', [LoginController::class, 'login']);
+
+// Route::group(['namespace' => 'Api', 'prefix' => 'v1'], function () {
+//     Route::post('login', [LoginController::class, 'store']);
+// });
+
+
+Route::name('api.')->group(function () {
+
+    Route::post('register', [RegistrationController::class, 'register'])->name('register');
+    Route::post('login', [LoginController::class, 'login'])->name('login');
 });

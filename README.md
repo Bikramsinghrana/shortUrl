@@ -49,9 +49,6 @@ php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvid
 # 8. Create storage link
 php artisan storage:link
 
-# 10. Seeder 
-php artisan db:seed
-
 # 9. Start development server
 php artisan serve
 ```
@@ -114,5 +111,101 @@ Login with:
 Helped improve UI structure and Blade layout organization.
 Supported in implementing permission logic using Spatie Roles & Permissions.
 
+
+Here’s a single-tab, compact README.md (no sections jumping around) only for Laravel Passport implementation.
+You can paste this as-is.
+
+# Laravel Passport API Authentication
+
+This project uses **Laravel Passport** to implement **token-based API authentication** (Register & Login).
+
+---
+
+## Installation  passport
+
+```bash
+# composer require laravel/passport
+php artisan migrate
+php artisan passport:install
+
+# Configuration
+# User Model (app/Models/User.php)
+
+use Laravel\Passport\HasApiTokens;
+class User extends Authenticatable
+{
+    use HasApiTokens;
+}
+
+
+# Auth Service Provider (app/Providers/AuthServiceProvider.php)
+
+use Laravel\Passport\Passport;
+public function boot()
+{
+    $this->registerPolicies();
+    Passport::routes();
+}
+
+
+# Auth Guard (config/auth.php)
+
+'guards' => [
+    'api' => [
+        'driver' => 'passport',
+        'provider' => 'users',
+    ],
+],
+
+# API Routes (routes/api.php)
+Route::post('register', [RegistrationController::class, 'register']);
+Route::post('login', [LoginController::class, 'login']);
+
+Route::middleware('auth:api')->get('profile', function (Request $request) {
+    return $request->user();
+});
+
+# Register API
+
+# URL for postman  +++++
+POST /api/register
+Body (JSON)
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+
+# Response
+{
+  "access_token": "TOKEN_VALUE",
+  "token_type": "Bearer",
+  "status" : "true"
+}
+
+# Login API
+
+POST /api/login
+# Body (JSON)
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+# Response
+{
+  "access_token": "TOKEN_VALUE",
+  "token_type": "Bearer"
+}
+
+# Postman Authorization
+# Add header key:
+
+Authorization: Bearer TOKEN_VALUE
+Accept: application/json
+Accept: application/json
 
 
