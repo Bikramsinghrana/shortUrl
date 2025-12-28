@@ -121,10 +121,10 @@ This project uses **Laravel Passport** to implement **token-based API authentica
 
 ---
 
-## Installation  passport
+## Installation  passport +++++++++++++++++++
 
 ```bash
-# composer require laravel/passport
+composer require laravel/passport
 php artisan migrate
 php artisan passport:install
 
@@ -144,7 +144,7 @@ use Laravel\Passport\Passport;
 public function boot()
 {
     $this->registerPolicies();
-    Passport::routes();
+    Passport::routes();  // add this optional
 }
 
 
@@ -161,8 +161,12 @@ public function boot()
 Route::post('register', [RegistrationController::class, 'register']);
 Route::post('login', [LoginController::class, 'login']);
 
-Route::middleware('auth:api')->get('profile', function (Request $request) {
-    return $request->user();
+# Route::middleware('auth:api')->get('profile', function (Request $request) {
+#     return $request->user();
+# });
+
+Route::middleware(['auth:api', 'verified'])->prefix('users')->group(function() {
+    Route::get('profile/index', [ProfileController::class, 'index'])->name('api.user.profile.index');
 });
 
 # Register API
@@ -201,11 +205,11 @@ POST /api/login
   "token_type": "Bearer"
 }
 
-# Postman Authorization
+# Postman Authorization api ++++++
 # Add header key:
 
 Authorization: Bearer TOKEN_VALUE
 Accept: application/json
-Accept: application/json
+Content-Type: application/json
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use Monolog\Handler\NativeMailerHandler;  // Add for mail logs
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -54,6 +55,7 @@ return [
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],
+            // 'channels' => ['single', 'mail'], // add mail here
             'ignore_exceptions' => false,
         ],
 
@@ -117,6 +119,23 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        // Add custon for mail logs
+
+        'mail' => [
+            'driver' => 'monolog',
+            'level' => 'critical',
+            'handler' => NativeMailerHandler::class,
+            'handler_with' => [
+                'to' => ['ranabikram8757@gmail.com'], // static recipient
+                'subject' => 'Critical Error in ShortUrlApp', // static subject
+                'from' => 'ranabikram8757@gmail.com', // static sender
+            ],
+        ],
+
+
+
     ],
+    
 
 ];

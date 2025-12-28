@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegistrationController;
+use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,9 @@ Route::name('api.')->group(function () {
 
     Route::post('register', [RegistrationController::class, 'register'])->name('register');
     Route::post('login', [LoginController::class, 'login'])->name('login');
+});
+
+Route::middleware(['auth:api', 'verified'])->prefix('users')->group(function() {
+    Route::get('profile/index', [ProfileController::class, 'index'])->name('api.user.profile.index');
+    Route::post('profile/update', [ProfileController::class, 'update'])->name('api.user.profile.update');
 });
