@@ -5,6 +5,8 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShortUrlController;
 use App\Http\Controllers\UrlRedirectController;
+use App\Http\Controllers\FileController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,6 +53,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [InvitationController::class, 'store'])->name('store');
         Route::delete('/{invitation}', [InvitationController::class, 'destroy'])->name('destroy');
     });
+    // File resource routes
+    Route::resource('files', FileController::class);
 });
 
 require __DIR__.'/auth.php';
