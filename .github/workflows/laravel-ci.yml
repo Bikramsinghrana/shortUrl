@@ -8,39 +8,45 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      # 1. Checkout code
+      # 1️⃣ Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup PHP
+      # 2️⃣ Setup PHP environment
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
-          extensions: mbstring, pdo, pdo_mysql
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_sqlite
+          tools: composer:v2
           coverage: none
 
-      # 3. Copy env
-      - name: Copy .env
-        run: cp .env.example .env
+      # 3️⃣ Prepare environment file
+      - name: Prepare .env
+        run: |
+          cp .env.example .env
+          php artisan key:generate
 
-      # 4. Install dependencies
+      # 4️⃣ Install Composer dependencies
       - name: Install Composer dependencies
-        run: composer install --no-progress --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      # 5. Generate key
-      - name: Generate app key
-        run: php artisan key:generate
+      # 5️⃣ Set directory permissions
+        run: chmod -R ug+rwx storage bootstrap/cache
 
-      # 6. Set permissions
-      - name: Set permissions
-        run: chmod -R 777 storage bootstrap/cache
+      # 6️⃣ Run database migrations (SQLite in-memory)
+      - name: Run migrations
+        run: php artisan migrate --force
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
 
-      # 7. Run tests
+      # 7️⃣ Run tests
       - name: Run tests
-        run: php artisan test
+        run: php artisan test --stop-on-failure
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: ':memory:'
