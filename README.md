@@ -90,7 +90,7 @@ Spatie\Permission\Models\Role::findByName('Member')->givePermissionTo(['create-s
 // Create first SuperAdmin user
 $user = App\Models\User::create([
     'name' => 'Super Admin',
-    'email' => 'superadmin@gmail.com',
+    'email' => 'admin@gmail.com',
     'password' => Hash::make('password'),
     'is_active' => true
 ]);
@@ -102,7 +102,7 @@ $user->assignRole('SuperAdmin');
 Open browser: `http://localhost:8000`
 
 Login with:
-- Email: superadmin@gmail.com
+- Email: admin@gmail.com
 - Password: password
 
 
