@@ -2,8 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RoleEnum;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class InviteUserRequest extends FormRequest
@@ -13,7 +17,10 @@ class InviteUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check() && Auth::user()->can('invite-users');   // add your authorization logic 
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return Auth::check() && (bool) $user?->can('invite-users');
     }
 
     /**
@@ -23,6 +30,7 @@ class InviteUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        /** @var User|null $authUser */
         $authUser = Auth::user();
 
         // For update: route model binding (invitations/{user})
@@ -37,16 +45,42 @@ class InviteUserRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($userId),
             ],
 
-            'role' => 'required|in:Admin,Member',
+            'role' => 'required|in:' . implode(',', [RoleEnum::ADMIN->value, RoleEnum::MEMBER->value]),
         ];
 
-        // SuperAdmin specific rules
         if ($authUser && $authUser->isSuperAdmin()) {
-            $rules['company_option'] = 'required|in:existing,new';
-            $rules['company_id']     = 'required_if:company_option,existing|nullable|exists:companies,id';
-            $rules['company_name']   = 'required_if:company_option,new|nullable|string|max:255';
+            $rules['role'] = 'required|in:' . RoleEnum::ADMIN->value;
+            $rules['company_option'] = 'required|in:new';
+            $rules['company_name'] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('companies', 'name'),
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $slug = Str::slug((string) $value);
+
+                    $slugExists = DB::table('companies')->where('slug', $slug)->exists();
+
+                    if ($slugExists) {
+                        $fail('This company name is already in use. Please choose a different company name.');
+                    }
+                },
+            ];
+            $rules['company_id'] = 'prohibited';
+        } elseif ($authUser && $authUser->isAdmin()) {
+            $rules['role'] = 'required|in:' . implode(',', [RoleEnum::ADMIN->value, RoleEnum::MEMBER->value]);
+            $rules['company_option'] = 'prohibited';
+            $rules['company_name'] = 'prohibited';
+            $rules['company_id'] = 'prohibited';
         }
 
         return $rules;
+    }
+
+    public function messages(): array
+    {
+        return [
+            'company_name.unique' => 'This company name is already in use. Please choose a different company name.',
+        ];
     }
 }

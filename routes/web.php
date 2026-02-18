@@ -46,7 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{shortUrl}', [ShortUrlController::class, 'destroy'])->name('destroy');
     });
 
-    // Invitations routes (for sending invites)
+    // Invitations routes
     Route::prefix('invitations')->name('invitations.')->group(function () {
         Route::get('/', [InvitationController::class, 'index'])->name('index');
         Route::get('/create', [InvitationController::class, 'create'])->name('create');

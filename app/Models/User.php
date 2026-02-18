@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoleEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -77,17 +78,17 @@ class User extends Authenticatable
 
     public function isSuperAdmin(): bool
     {
-        return $this->hasRole('SuperAdmin');
+        return $this->hasRole(RoleEnum::SUPER_ADMIN->value);
     }
 
     public function isAdmin(): bool
     {
-        return $this->hasRole('Admin');
+        return $this->hasRole(RoleEnum::ADMIN->value);
     }
 
     public function isMember(): bool
     {
-        return $this->hasRole('Member');
+        return $this->hasRole(RoleEnum::MEMBER->value);
     }
 
     /**

@@ -1,215 +1,111 @@
-# Short URL Management System
+# Short URL Service (Laravel)
 
-Multi-tenant URL shortening application with role-based access control and company management.
+This project is a multi-company short URL service built with Laravel, using:
+- Role-based access (SuperAdmin, Admin, Member, Manager)
+- Invitation flow (SuperAdmin/Admin)
+- Public short URL resolution and redirect
+- Service + Repository architecture with reusable Enums
 
-## Features
+## Tech Stack
 
-- URL Shortening with custom codes
-- Multi-tenant architecture
-- Role-based permissions (SuperAdmin, Admin, Member)
-- User invitation system with email notifications
-- URL click tracking and analytics
-- URL expiration management
+- Laravel 10+
+- PHP 8.1+
+- MySQL or SQLite
+- Spatie Laravel Permission
 
-## Requirements
-
-- PHP >= 8.1
-- Composer
-- Node.js >= 16.x
-- MySQL >= 5.7
-- Apache
-
-## Installation
+## Clone & Install
 
 ```bash
-# 1. Clone repository
-git clone <https://github.com/Bikramsinghrana/shortUrl.git>   Or Unzip folder
+git clone https://github.com/Bikramsinghrana/shortUrl.git
 cd shortUrl
-
-# 2. Install dependencies
-composer update
+composer install
 npm install
-
-# 3. Configure environment
 cp .env.example .env
-# Edit .env with your database and mail settings
-
-# 4. Generate application key
 php artisan key:generate
-
-# 5. Create database
-mysql -u root -p -e "CREATE DATABASE short_url CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-
-# 6. Run migrations
-php artisan migrate --seed
-
-# 7. Publish vendor assets
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-
-# 8. Create storage link
-php artisan storage:link
-
-# 9. Start development server
-php artisan serve
 ```
 
-## Environment Configuration
+## Database Setup
 
-Edit `.env` file:
+### Option A: MySQL
+Set these in `.env`:
 
 ```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
 DB_DATABASE=short_url
 DB_USERNAME=root
 DB_PASSWORD=
-
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=your_username
-MAIL_PASSWORD=your_password
-MAIL_FROM_ADDRESS="noreply@shorturl.com"
 ```
 
-
-```php
-// Create roles
-foreach (['SuperAdmin', 'Admin', 'Member'] as $role) {
-    Spatie\Permission\Models\Role::create(['name' => $role]);
-}
-
-// Create permissions
-foreach (['invite-users', 'create-short-urls', 'edit-short-urls', 'delete-short-urls'] as $permission) {
-    Spatie\Permission\Models\Permission::create(['name' => $permission]);
-}
-
-// Assign permissions
-Spatie\Permission\Models\Role::findByName('SuperAdmin')->givePermissionTo(['invite-users']);
-Spatie\Permission\Models\Role::findByName('Admin')->givePermissionTo(['invite-users', 'create-short-urls', 'edit-short-urls', 'delete-short-urls']);
-Spatie\Permission\Models\Role::findByName('Member')->givePermissionTo(['create-short-urls', 'edit-short-urls', 'delete-short-urls']);
-
-// Create first SuperAdmin user
-$user = App\Models\User::create([
-    'name' => 'Super Admin',
-    'email' => 'admin@gmail.com',
-    'password' => Hash::make('password'),
-    'is_active' => true
-]);
-$user->assignRole('SuperAdmin');
-```
-
-## Access Application
-
-Open browser: `http://localhost:8000`
-
-Login with:
-- Email: admin@gmail.com
-- Password: password
-
-
-> AI Tools ChatGPT Used and stack
-
-Helped improve UI structure and Blade layout organization.
-Supported in implementing permission logic using Spatie Roles & Permissions.
-
-
-Here’s a single-tab, compact README.md (no sections jumping around) only for Laravel Passport implementation.
-You can paste this as-is.
-
-# Laravel Passport API Authentication
-
-This project uses **Laravel Passport** to implement **token-based API authentication** (Register & Login).
-
----
-
-## Installation  passport +++++++++++++++++++
+Then run:
 
 ```bash
-composer require laravel/passport
-php artisan migrate
-php artisan passport:install
+php artisan migrate --seed
+```
 
-# Configuration
-# User Model (app/Models/User.php)
+### Option B: SQLite
+Set these in `.env`:
 
-use Laravel\Passport\HasApiTokens;
-class User extends Authenticatable
-{
-    use HasApiTokens;
-}
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/database/database.sqlite
+```
 
+Then run:
 
-# Auth Service Provider (app/Providers/AuthServiceProvider.php)
+```bash
+type nul > database/database.sqlite
+php artisan migrate --seed
+```
 
-use Laravel\Passport\Passport;
-public function boot()
-{
-    $this->registerPolicies();
-    Passport::routes();  // add this optional
-}
+## SuperAdmin Seeder (Raw SQL)
 
+The SuperAdmin account is created using raw SQL in `database/seeders/SuperAdminSeeder.php`.
 
-# Auth Guard (config/auth.php)
+Credentials:
+- Email: `superadmin@gmail.com`
+- Password: `password`
 
-'guards' => [
-    'api' => [
-        'driver' => 'passport',
-        'provider' => 'users',
-    ],
-],
+## Run Project
 
-# API Routes (routes/api.php)
-Route::post('register', [RegistrationController::class, 'register']);
-Route::post('login', [LoginController::class, 'login']);
+```bash
+php artisan serve
+npm run dev
+```
 
-# Route::middleware('auth:api')->get('profile', function (Request $request) {
-#     return $request->user();
-# });
+Open: `http://127.0.0.1:8000`
 
-Route::middleware(['auth:api', 'verified'])->prefix('users')->group(function() {
-    Route::get('profile/index', [ProfileController::class, 'index'])->name('api.user.profile.index');
-});
+## Run Tests
 
-# Register API
+```bash
+php artisan test
+```
 
-# URL for postman  +++++
-POST /api/register
-Body (JSON)
+Targeted assignment test file:
 
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "password_confirmation": "password123"
-}
+```bash
+php artisan test --filter=ShortUrlAuthorizationTest
+```
 
-# Response
-{
-  "access_token": "TOKEN_VALUE",
-  "token_type": "Bearer",
-  "status" : "true"
-}
+## Assignment Rules Covered
 
-# Login API
+- Admin and Member can create short URLs
+- SuperAdmin cannot create short URLs
+- SuperAdmin sees short URLs from all companies
+- Admin sees short URLs created in their own company
+- Member sees short URLs created by themselves
+- Short URLs are publicly resolvable and redirect to the original URL
+- SuperAdmin can only invite Admin into a new company
+- Admin can invite Admin/Member only inside their own company
 
-POST /api/login
-# Body (JSON)
+## Architecture Notes
 
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
+- `app/Enums`: reusable domain enums (`RoleEnum`, `InvitationStatusEnum`, `CompanyOptionEnum`)
+- `app/Repositories`: reusable data access layer (Eloquent ORM)
+- `app/Services`: business rules and orchestration
+- Controllers are thin and delegate logic to services
 
-# Response
-{
-  "access_token": "TOKEN_VALUE",
-  "token_type": "Bearer"
-}
+## GitHub Repository
 
-# Postman Authorization api ++++++
-# Add header key:
-
-Authorization: Bearer TOKEN_VALUE
-Accept: application/json
-Content-Type: application/json
-
-
+https://github.com/Bikramsinghrana/shortUrl

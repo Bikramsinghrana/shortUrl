@@ -213,6 +213,6 @@ return [
     ])->toArray(),
 
     /* global pagination number */
-    'PAGINATION_NUMBER' => '2',
+    'PAGINATION_NUMBER' => (int) env('PAGINATION_NUMBER', 10),
 
 ];

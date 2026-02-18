@@ -2,30 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ShortUrl;
-use Illuminate\Http\Request;
+use App\Services\ShortUrlService;
 
 class UrlRedirectController extends Controller
 {
+    public function __construct(private readonly ShortUrlService $shortUrlService)
+    {
+    }
+
     /**
      * Redirect short URL to original URL
      */
     public function redirect($shortCode)
     {
-        $shortUrl = ShortUrl::where('short_code', $shortCode)->first();
+        $shortUrl = $this->shortUrlService->resolveForAuthenticatedUser($shortCode);
 
         if (!$shortUrl) {
-            abort(404, 'Short URL not found.');
+            abort(404, 'Short URL not found or unavailable.');
         }
 
-        if (!$shortUrl->isAccessible()) {
-            abort(410, 'This short URL has expired or is no longer active.');
-        }
+        $this->shortUrlService->incrementClicks($shortUrl);
 
-        // Increment click count
-        $shortUrl->incrementClicks();
-
-        // Redirect to original URL
         return redirect($shortUrl->original_url);
     }
 }

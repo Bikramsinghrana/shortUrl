@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RoleEnum;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -9,7 +11,18 @@ class StoreShortUrlRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return Auth::user()?->can('create-short-urls') ?? false;
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->hasRole(RoleEnum::SUPER_ADMIN->value)) {
+            return false;
+        }
+
+        return $user->can('create-short-urls');
     }
 
     public function rules(): array

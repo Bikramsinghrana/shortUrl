@@ -46,7 +46,7 @@ class DashboardController extends Controller
         $companyId = $user->company_id;
         // $companyUrls = ShortUrl::with('user')->where('company_id', $companyId)->latest()->paginate(config('app.PAGINATION_NUMBER'));
 
-        $perPage = config('app.PAGINATION_NUMBER', 15);
+        $perPage = config('app.PAGINATION_NUMBER', 2);
 
         // ADMIN → see own + all nested child admins
         $userIds = $user->descendantIds();

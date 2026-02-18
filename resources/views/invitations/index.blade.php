@@ -63,7 +63,8 @@
                                 @endforeach
                             </tbody>
                         </table>
-
+                        
+                        <!-- Pagination links -->
                         <div class="mt-4">
                             {{ $invitations->links() }}
                         </div>
