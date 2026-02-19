@@ -5,12 +5,12 @@ namespace App\Services;
 use App\Enums\RoleEnum;
 use App\Models\ShortUrl;
 use App\Models\User;
-use App\Repositories\Contracts\ShortUrlRepositoryInterface;
+use App\Repositories\ShortUrlRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ShortUrlService
 {
-    public function __construct(private readonly ShortUrlRepositoryInterface $shortUrlRepository)
+    public function __construct(private readonly ShortUrlRepository $shortUrlRepository)
     {
     }
 

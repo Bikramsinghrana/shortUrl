@@ -5,10 +5,9 @@ namespace App\Repositories;
 use App\Enums\RoleEnum;
 use App\Models\ShortUrl;
 use App\Models\User;
-use App\Repositories\Contracts\ShortUrlRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class ShortUrlRepository implements ShortUrlRepositoryInterface
+class ShortUrlRepository
 {
     public function getVisibleForUser(User $user, int $perPage): LengthAwarePaginator
     {

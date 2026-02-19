@@ -68,10 +68,10 @@
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Hits
                                     </th>
-                                    <th
+                                    {{-- <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Data Boxes
-                                    </th>
+                                    </th> --}}
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Created On
@@ -99,7 +99,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $url->clicks }}
                                         </td>
-                                        <td class="px-6 py-4">
+                                        {{-- <td class="px-6 py-4">
                                             <div class="flex flex-col space-y-1 text-xs">
                                                 <div class="flex justify-between">
                                                     <span class="text-gray-600">This Month:</span>
@@ -114,7 +114,8 @@
                                                     <span class="font-semibold">{{ rand(0, min(10, $url->clicks)) }}</span>
                                                 </div>
                                             </div>
-                                        </td>
+                                        </td> --}}
+
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $url->created_at->format('d M Y') }}
                                         </td>

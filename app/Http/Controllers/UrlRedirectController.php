@@ -21,6 +21,7 @@ class UrlRedirectController extends Controller
             abort(404, 'Short URL not found or unavailable.');
         }
 
+        // Increment click count and redirect
         $this->shortUrlService->incrementClicks($shortUrl);
 
         return redirect($shortUrl->original_url);

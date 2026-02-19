@@ -6,7 +6,7 @@ use App\Enums\InvitationStatusEnum;
 use App\Enums\RoleEnum;
 use App\Jobs\SendInvitationEmailJob;
 use App\Models\User;
-use App\Repositories\Contracts\InvitationRepositoryInterface;
+use App\Repositories\InvitationRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 class InvitationService
 {
-    public function __construct(private readonly InvitationRepositoryInterface $invitationRepository)
+    public function __construct(private readonly InvitationRepository $invitationRepository)
     {
     }
 

@@ -10,7 +10,7 @@ This project is a multi-company short URL service built with Laravel, using:
 
 - Laravel 10+
 - PHP 8.1+
-- MySQL or SQLite
+- MySQL
 - Spatie Laravel Permission
 
 ## Clone & Install
@@ -106,6 +106,3 @@ php artisan test --filter=ShortUrlAuthorizationTest
 - `app/Services`: business rules and orchestration
 - Controllers are thin and delegate logic to services
 
-## GitHub Repository
-
-https://github.com/Bikramsinghrana/shortUrl

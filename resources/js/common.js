@@ -1,14 +1,18 @@
-document.addEventListener("DOMContentLoaded", () => {
+function autoDismissFlashMessage() {
+    const flash = document.getElementById('flash-message');
 
-    // remove message status
-    const flash = document.getElementById("flash-message");
-
-    if (flash) {
-        setTimeout(() => {
-            flash.style.transition = "opacity 0.5s";
-            flash.style.opacity = "0";
-
-            setTimeout(() => flash.remove(), 500);
-        }, 3000); 
+    if (!flash) {
+        return;
     }
-});
+
+    setTimeout(() => {
+        flash.style.transition = 'opacity 0.5s';
+        flash.style.opacity = '0';
+
+        setTimeout(() => flash.remove(), 500);
+    }, 3000);
+}
+
+export function initCommonUi() {
+    autoDismissFlashMessage();
+}

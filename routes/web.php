@@ -59,6 +59,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Public URL Redirect (Catch-all route - MUST be last!)
+// Public URL Redirect
 
 Route::get('/{shortCode}', [UrlRedirectController::class, 'redirect'])->where('shortCode', '[a-zA-Z0-9]+')->name('url.redirect');

@@ -5,10 +5,9 @@ namespace App\Repositories;
 use App\Enums\RoleEnum;
 use App\Models\Company;
 use App\Models\User;
-use App\Repositories\Contracts\InvitationRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class InvitationRepository implements InvitationRepositoryInterface
+class InvitationRepository
 {
     public function getInvitationsForUser(User $user, int $perPage): LengthAwarePaginator
     {
