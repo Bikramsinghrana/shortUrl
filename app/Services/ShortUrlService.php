@@ -65,7 +65,7 @@ class ShortUrlService
         return $this->canCreate($user) && $shortUrl->user_id === $user->id;
     }
 
-    public function resolveForAuthenticatedUser(string $shortCode): ?ShortUrl
+    public function GetShortUrl(string $shortCode): ?ShortUrl
     {
         $shortUrl = $this->shortUrlRepository->findByShortCode($shortCode);
 

@@ -15,7 +15,7 @@ class UrlRedirectController extends Controller
      */
     public function redirect($shortCode)
     {
-        $shortUrl = $this->shortUrlService->resolveForAuthenticatedUser($shortCode);
+        $shortUrl = $this->shortUrlService->GetShortUrl($shortCode);
 
         if (!$shortUrl) {
             abort(404, 'Short URL not found or unavailable.');
