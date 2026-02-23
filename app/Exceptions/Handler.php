@@ -2,8 +2,17 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Log;
+use Laravel\Passport\Exceptions\AuthenticationException;
+use League\Config\Exception\ValidationException;
+use PDOException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -52,12 +61,102 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (Throwable $e, $request) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'An unexpected error occurred. Please try again later.',
-                ], 500);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return $this->handleApiException($e);
             }
+
+            return $this->handleWebException($e, $request);
         });
+
+
+        
     }
+
+    protected function handleWebException(Throwable $e, $request)
+    {
+        if ($e instanceof TokenMismatchException) {
+            return redirect()
+                ->back()
+                ->withInput($request->except('_token'))
+                ->with('error', 'Your session has expired. Please try again.');
+        }
+
+        if ($e instanceof AuthenticationException) {
+            return redirect()->guest(url('/login'));
+        }
+
+        if ($e instanceof AuthorizationException) {
+            return response()->view('errors.403', ['exception' => $e], 403);
+        }
+
+        if (
+            $e instanceof NotFoundHttpException ||
+            $e instanceof MethodNotAllowedHttpException ||
+            $e instanceof ModelNotFoundException
+        ) {
+            return response()->view('errors.404', ['exception' => $e], 404);
+        }
+
+        if ($e instanceof QueryException || $e instanceof PDOException) {
+            return response()->view('errors.503', ['exception' => $e], 503);
+        }
+
+        return null;
+    }
+
+    protected function handleApiException(Throwable $e)
+    {
+        if ($e instanceof ValidationException) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+
+        if ($e instanceof AuthenticationException) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated',
+                'errors' => null,
+            ], 401);
+        }
+
+        if ($e instanceof AuthorizationException) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Forbidden',
+                'errors' => null,
+            ], 403);
+        }
+
+        if (
+            $e instanceof NotFoundHttpException ||
+            $e instanceof MethodNotAllowedHttpException ||
+            $e instanceof ModelNotFoundException
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Resource not found',
+                'errors' => null,
+            ], 404);
+        }
+
+        if ($e instanceof QueryException || $e instanceof PDOException) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Service temporarily unavailable',
+                'errors' => null,
+            ], 503);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Internal server error',
+            'errors' => null,
+        ], 500);
+    }
+
+   
     
 }
